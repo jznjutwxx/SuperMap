@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>地图工具栏</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="../JS/MapToImg.js"></script>
+    <script src="../JS/LargeFormatPrints.js"></script>
+    <script src="../JS/libs/SuperMap.Include.js"></script>
+    <script src="../JS/vue.js"></script>
+    <script src="../JS/element-ui/index.js"></script>
+    <style>
+        html {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #app {
+            width: 100%;
+            height: 100%;
+        }
+
+        #map {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        #toolbar {
+            position: absolute;
+            top: 34px;
+            right: 24px;
+            height: 45px;
+            width: 700px;
+            border: 1px solid rgb(185, 185, 185);
+            background-color: white;
+            z-index: 10000;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .el-row {
+            margin-bottom: 20px;
+            padding: 5px;
+        }
+
+        .el-col-1 {
+            padding-left: 14px;
+            margin-top: 6px;
+        }
+
+        .separator {
+            float: left;
+            width: 1px;
+            height: 25px;
+            background: #dcdcdc;
+        }
+
+        .el-button--text {
+            color: #333333;
+        }
+
+        .ss {
+            background: url('../images/ico_sousuo_normal.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .ss:hover {
+            background: url('../images/ico_sousuo_active.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .ss:focus {
+            background: url('../images/ico_sousuo_active.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .my {
+            background: url('../images/ico_manyou_normal.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .my:hover {
+            background: url('../images/ico_manyou_active.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .my:focus {
+            background: url('../images/ico_manyou_active.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .cx {
+            background: url('../images/ico_chaxun_normal.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .cx:hover {
+            background: url('../images/ico_chaxun_active.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .cx:focus {
+            background: url('../images/ico_chaxun_active.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .cl {
+            background: url('../images/ico_celiang_normal.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .cl:hover {
+            background: url('../images/ico_celiang_active.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .cl:focus {
+            background: url('../images/ico_celiang_active.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .jp {
+            background: url('../images/ico_jieping_normal.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .jp:hover {
+            background: url('../images/ico_jieping_active.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .jp:focus {
+            background: url('../images/ico_jieping_active.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .dc {
+            background: url('../images/ico_daochu_normal.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .dc:hover {
+            background: url('../images/ico_daochu_active.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .dc:focus {
+            background: url('../images/ico_daochu_active.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .bj {
+            background: url('../images/ico_biaoji_normal.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .bj:hover {
+            background: url('../images/ico_biaoji_active.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .bj:focus {
+            background: url('../images/ico_biaoji_active.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .qc {
+            background: url('../images/ico_qingchu_normal.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .qc:hover {
+            background: url('../images/ico_qingchu_active.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .qc:focus {
+            background: url('../images/ico_qingchu_active.png') no-repeat;
+            padding-left: 17px;
+            background-position: left;
+        }
+
+        .el-popover {
+            text-align: center;
+        }
+
+        .measureDIV {
+            width: 48%;
+            float: left;
+        }
+
+        .measureDIV:hover {
+            background-color: #e3f4ff;
+            border: 1px solid #aedfff;
+            border-radius: 4px;
+        }
+
+        .link {
+            text-decoration: none;
+            color: #333333;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .txtcss {
+            font-size: 14px;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div id="map"></div>
+        <div id="toolbar">
+            <el-row>
+                <el-col :span="2">
+                    <el-popover placement="bottom" width="100" trigger="click" content="河道/水质检索">
+                        <el-button type="text" slot="reference" class="ss">搜索</el-button>
+                    </el-popover>
+                </el-col>
+                <el-col :span="1">
+                    <div class="separator"></div>
+                </el-col>
+                <el-col :span="2">
+                    <el-button type="text" class="my">漫游</el-button>
+                </el-col>
+                <el-col :span="1">
+                    <div class="separator"></div>
+                </el-col>
+                <el-col :span="2">
+                    <el-popover placement="bottom" width="200" trigger="click" content="查询">
+                        <el-button type="text" slot="reference" class="cx">查询</el-button>
+                    </el-popover>
+                </el-col>
+                <el-col :span="1">
+                    <div class="separator"></div>
+                </el-col>
+                <el-col :span="2">
+                    <el-popover placement="bottom" width="150" trigger="click">
+                        <slot name="measure">
+                            <div>
+                                <div id="distM" title="测量距离" class="measureDIV">
+                                    <a v-on:click="this.measureDistance" class="link">
+                                        <img src="../images/ico_juli.png" />
+                                        <span class="txtcss">距离</span>
+                                    </a>
+                                </div>
+                                <div id="areaM" title="测量面积" class="measureDIV">
+                                    <a v-on:click="this.measureArea" class="link">
+                                        <img src="../images/ico_mianji.png" />
+                                        <span class="txtcss">面积</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </slot>
+                        <el-button type="text" slot="reference" class="cl">测量</el-button>
+                    </el-popover>
+                </el-col>
+                <el-col :span="1">
+                    <div class="separator"></div>
+                </el-col>
+                <el-col :span="2">
+                    <el-button type="text" class="jp" v-on:click="this.JPMap">截图</el-button>
+                </el-col>
+                <el-col :span="1">
+                    <div class="separator"></div>
+                </el-col>
+                <el-col :span="2">
+                    <el-button type="text" class="dc" v-on:click="this.PrintMap">导出</el-button>
+                    <!-- <el-popover placement="bottom" width="200" trigger="click" content="导出">
+                        <el-button type="text" slot="reference" class="dc" v-on:click="this.PrintMap">导出</el-button>
+                    </el-popover> -->
+                </el-col>
+                <el-col :span="1">
+                    <div class="separator"></div>
+                </el-col>
+                <el-col :span="2">
+                    <el-button type="text" class="bj">标记</el-button>
+                </el-col>
+                <el-col :span="1">
+                    <div class="separator"></div>
+                </el-col>
+                <el-col :span="2">
+                    <el-button type="text" class="qc" v-on:click="this.clearAll">清除</el-button>
+                </el-col>
+            </el-row>
+
+        </div>
+    </div>
+</body>
+<script>
+    new Vue({
+        el: '#app',
+        data: {
+            url1: "http://222.66.154.70:8090/iserver/services/map-ugcv5-FengXianJiChuDiTu2/rest/maps/FengXianJiChuDiTu",
+            map: null,
+            layer: null,
+            vectorLayer: null,
+            vectorLayerLine: null,
+            vectorLayerX: null,
+            vectorLayerTmp: null,
+            select: null,
+            lineMeasure: null, //测量长度
+            areaMeasure: null, //测量面积
+        },
+        watch: {
+
+        },
+        mounted: function () {
+            this.init();
+        },
+        methods: {
+            measureDistance: function () {
+                this.vectorLayer.removeAllFeatures();
+                this.vectorLayerLine.removeAllFeatures();
+                this.vectorLayerTmp.removeAllFeatures();
+                this.vectorLayerX.removeAllFeatures();
+                this.lineMeasure.activate();
+            },
+            measureArea: function () {
+                this.vectorLayer.removeAllFeatures();
+                this.vectorLayerLine.removeAllFeatures();
+                this.vectorLayerTmp.removeAllFeatures();
+                this.vectorLayerX.removeAllFeatures();
+                this.areaMeasure.activate();
+            },
+            init: function () {
+                this.layer = new SuperMap.Layer.TiledDynamicRESTLayer('奉贤底图', this.url1, {
+                    transparent: true,
+                    cacheEnabled: true
+                }, {
+                    maxResolution: 'auto'
+                });
+                this.layer.events.on({
+                    'layerInitialized': this.addLayer
+                });
+                this.vectorLayer = new SuperMap.Layer.Vector("点和文字");
+                this.vectorLayerLine = new SuperMap.Layer.Vector("线");
+                this.vectorLayerX = new SuperMap.Layer.Vector("删除");
+                this.vectorLayerTmp = new SuperMap.Layer.Vector("临时");
+                this.select = new SuperMap.Control.SelectFeature(this.vectorLayerX, {
+                    onSelect: this.onFeatureSelect
+                });
+                //长度测量控件初始化
+                this.lineMeasure = new SuperMap.Control.Measure(
+                    SuperMap.Handler.Path, {
+                        immediate: true //当immediate为true时，量算过程中时时显示结果，同时会触发 “measurepartial” 事件
+                    }
+                );
+                this.lineMeasure.events.on({
+                    "measure": this.handleMeasure,
+                    "measurepartial": this.handleMeasurements
+                });
+                //面积测量控件初始化
+                this.areaMeasure = new SuperMap.Control.Measure(
+                    SuperMap.Handler.Polygon, {
+                        immediate: true
+                    }
+                );
+                this.areaMeasure.events.on({
+                    "measure": this.handleMeasureP,
+                    "measurepartial": this.handleMeasurementsP
+                });
+
+                this.map = new SuperMap.Map('map', {
+                    controls: [
+                        new SuperMap.Control.MousePosition(),
+                        new SuperMap.Control.Navigation({
+                            dragPanOptions: {
+                                enableKinetic: true
+                            }
+                        }),
+                        this.select,
+                        this.lineMeasure,
+                        this.areaMeasure
+                    ],
+                    allOverlays: true
+                });
+            },
+            addLayer: function () {
+                this.map.addLayers([this.layer, this.vectorLayerLine, this.vectorLayer, this.vectorLayerTmp,
+                    this.vectorLayerX
+                ]);
+                this.map.setCenter(new SuperMap.LonLat(121.56, 30.9), 0);
+            },
+            //最终双击结束
+            handleMeasure: function (event) {
+                this.lineMeasure.deactivate();
+                this.vectorLayerTmp.removeAllFeatures();
+                //获取最后的点
+                var pointFinish = new SuperMap.Geometry.Point(event.geometry.components[(event.geometry.components
+                    .length - 1)].x, event.geometry.components[(event.geometry.components.length -
+                    1)].y);
+                //克隆坐标点 用于显示关闭按钮
+                var pointCopy = pointFinish.clone();
+                //单位转换
+                var unitString = "";
+                if (event.units == "m") {
+                    unitString = "米";
+                } else if (event.units == "km") {
+                    unitString = "公里";
+                } else {
+                    unitString = "";
+                }
+                //显示点和长度文字
+                var f = new SuperMap.Feature.Vector();
+                f.geometry = pointFinish;
+                f.style = {
+                    label: "总长：" + event.measure.toFixed(1) + unitString,
+                    fontColor: 'red',
+                    strokeColor: "red",
+                    strokeOpacity: 1,
+                    fillColor: "#ffffff",
+                    labelXOffset: 20,
+                    labelYOffset: 20,
+                    pointRadius: 4
+                };
+                //删除按钮
+                var fc = new SuperMap.Feature.Vector();
+                fc.geometry = pointCopy;
+                fc.style = {
+                    externalGraphic: "../images/Error.png",
+                    strokeColor: "red",
+                    graphicWidth: 16,
+                    graphicHeight: 16,
+                    strokeOpacity: 1,
+                    fillColor: "#ffffff",
+                    graphicXOffset: 10,
+                    pointRadius: 4
+                };
+                //保存之前绘制的节点用于显示其他样式
+                var points = [];
+                for (var i = 0; i < event.geometry.components.length; i++) {
+                    points.push(new SuperMap.Geometry.Point(event.geometry.components[i].x, event.geometry.components[
+                        i].y));
+                }
+                var qu = new SuperMap.Geometry.LineString(points);
+                var ff = new SuperMap.Feature.Vector();
+                ff.geometry = qu;
+                ff.style = {
+                    strokeColor: "#FC854D",
+                    strokeWidth: 2.5,
+                    pointerEvents: "visiblePainted",
+                    fillColor: "#FC854D",
+                    fillOpacity: 1
+                };
+                this.vectorLayerLine.addFeatures(ff);
+                this.vectorLayer.addFeatures(f);
+                this.vectorLayerX.addFeatures(fc);
+                //激活选择要素的控件
+                this.select.activate();
+            },
+            //绘制过程中单击和移动事件
+            handleMeasurements: function (event) {
+                //console.log(event);
+                var geometry = event.geometry;
+                var type = event.type;
+                var unitString = "";
+                if (event.units == "m") {
+                    unitString = "米";
+                } else if (event.units == "km") {
+                    unitString = "公里";
+                } else {
+                    unitString = "";
+                }
+                if (type == 'click') {
+                    //当event.type 为 click时，即为鼠标点击操作，且event.geometry.components.length == 2时为首次点击起点
+                    if (event.geometry.components.length == 2) {
+                        var pointStart = new SuperMap.Geometry.Point(event.geometry.components[(event.geometry
+                            .components.length - 1)].x, event.geometry.components[(event.geometry.components
+                            .length - 1)].y);
+                        var f = new SuperMap.Feature.Vector();
+                        f.geometry = pointStart;
+                        f.style = {
+                            label: '起点',
+                            fontColor: 'red',
+                            strokeColor: "red",
+                            strokeOpacity: 1,
+                            fillColor: "#ffffff",
+                            labelXOffset: 20,
+                            labelYOffset: 20,
+                            pointRadius: 4
+                        };
+                        this.vectorLayer.addFeatures(f);
+                    } else {
+                        //单击节点
+                        var pointStart = new SuperMap.Geometry.Point(event.geometry.components[(event.geometry
+                            .components.length - 1)].x, event.geometry.components[(event.geometry.components
+                            .length - 1)].y);
+                        var f = new SuperMap.Feature.Vector();
+                        f.geometry = pointStart;
+                        f.style = {
+                            label: +event.measure.toFixed(1) + unitString,
+                            fontColor: 'red',
+                            strokeColor: "red",
+                            strokeOpacity: 1,
+                            fillColor: "#ffffff",
+                            labelXOffset: 20,
+                            labelYOffset: 20,
+                            pointRadius: 4
+                        };
+                        this.vectorLayer.addFeatures(f);
+                    }
+                } else {
+                    //临时显示点信息
+                    this.vectorLayerTmp.removeAllFeatures();
+                    var pointStart = new SuperMap.Geometry.Point(event.geometry.components[(event.geometry.components
+                        .length - 1)].x, event.geometry.components[(event.geometry.components.length -
+                        1)].y);
+                    var f = new SuperMap.Feature.Vector();
+                    f.geometry = pointStart;
+                    f.style = {
+                        label: +event.measure.toFixed(1) + unitString,
+                        fontColor: 'red',
+                        strokeColor: "red",
+                        strokeOpacity: 1,
+                        fillColor: "#ffffff",
+                        labelXOffset: 20,
+                        labelYOffset: 20,
+                        pointRadius: 4
+                    };
+                    this.vectorLayerTmp.addFeatures(f);
+                }
+            },
+            //点击删除量算按钮
+            onFeatureSelect: function () {
+                this.vectorLayer.removeAllFeatures();
+                this.vectorLayerLine.removeAllFeatures();
+                this.vectorLayerX.removeAllFeatures();
+                this.select.deactivate();
+            },
+
+            //最终双击结束（面积）
+            handleMeasureP: function (event) {
+                this.areaMeasure.deactivate();
+                var points = [];
+                var components = event.geometry.components[0].components;
+                for (var i = 0; i < components.length; i++) {
+                    points.push(new SuperMap.Geometry.Point(components[i].x, components[
+                        i].y));
+                }
+                var linearRings = new SuperMap.Geometry.LinearRing(points);
+                var region = new SuperMap.Geometry.Polygon([linearRings]);
+                var ff = new SuperMap.Feature.Vector();
+                ff.geometry = region;
+                ff.style = {
+                    strokeColor: "#304DBE",
+                    strokeWidth: 2,
+                    pointerEvents: "visiblePainted",
+                    fillColor: "#304DBE",
+                    fillOpacity: 0.8
+                };
+                this.vectorLayerLine.addFeatures(ff);
+
+                //单位转换
+                var unitString = "";
+                if (event.units == "m") {
+                    unitString = "平方米";
+                } else if (event.units == "km") {
+                    unitString = "平方公里";
+                } else {
+                    unitString = "";
+                }
+                var pointcenter = region.getCentroid();
+                var f = new SuperMap.Feature.Vector();
+                f.geometry = pointcenter;
+                f.style = {
+                    label: '总面积：' + event.measure.toFixed(2) + unitString,
+                    fontColor: 'red',
+                    strokeColor: "red",
+                    strokeOpacity: 1,
+                    fillColor: "#ffffff",
+                    fontSize: "14px",
+                    // labelXOffset: 20,
+                    // labelYOffset: 20
+                    // pointRadius: 4
+                };
+                this.vectorLayer.addFeatures(f);
+
+            },
+            handleMeasurementsP: function (event) {
+                // console.log(event);
+            },
+            //截图
+            JPMap: function () {
+                // console.log(MapToImg);
+                MapToImg && MapToImg.excute(this.map);
+            },
+            //地图打印
+            PrintMap: function () {
+                var broz = SuperMap.Browser.name;
+                if (broz == 'msie' && parseInt(SuperMap.Browser.version) < 9) {
+                    alert("ie9版本以下部分打印功能不支持");
+                    return;
+                }
+                var center = this.map.getCenter();
+                var scale = this.map.getScale();
+                LargeFormatPrint && LargeFormatPrint.excute(this.url1, "4326", scale, center, "A0", this.map);
+            },
+            //清除
+            clearAll:function(){
+                this.vectorLayer.removeAllFeatures();
+                this.vectorLayerLine.removeAllFeatures();
+                this.vectorLayerX.removeAllFeatures();
+                this.vectorLayerTmp.removeAllFeatures();
+            }
+        }
+    });
+</script>
+
+</html>

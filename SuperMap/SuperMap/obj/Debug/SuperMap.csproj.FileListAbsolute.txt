@@ -1,0 +1,6 @@
+C:\Users\Administrator\Desktop\SuperMap\SuperMap\SuperMap\bin\SuperMap.dll.config
+C:\Users\Administrator\Desktop\SuperMap\SuperMap\SuperMap\bin\SuperMap.dll
+C:\Users\Administrator\Desktop\SuperMap\SuperMap\SuperMap\bin\SuperMap.pdb
+C:\Users\Administrator\Desktop\SuperMap\SuperMap\SuperMap\obj\Debug\SuperMap.csprojResolveAssemblyReference.cache
+C:\Users\Administrator\Desktop\SuperMap\SuperMap\SuperMap\obj\Debug\SuperMap.dll
+C:\Users\Administrator\Desktop\SuperMap\SuperMap\SuperMap\obj\Debug\SuperMap.pdb

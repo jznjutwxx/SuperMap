@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>点线面绘制</title>
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <script src="../../JS/libs/SuperMap.Include.js"></script>
+    <script src="../../JS/vue.js"></script>
+    <script src="../../JS/element-ui/index.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        #map {
+            position: relative;
+            height: 550px;
+            border: 1px solid #555;
+        }
+
+        #app {
+            padding: 6px;
+        }
+
+        #toolbar {
+            position: relative;
+            padding-top: 5px;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div id=toolbar>
+            <el-button type="primary" @click="draw_point">绘点</el-button>
+            <el-button type="primary" @click="draw_line">绘线</el-button>
+            <el-button type="primary" @click="draw_polygon">绘面</el-button>
+            <el-button type="primary" @click="clearFeatures">清除</el-button>
+        </div>
+        <div id="map"></div>
+    </div>
+</body>
+<script>
+    var VM = new Vue({
+        el: '#app',
+        data: {
+            map: null,
+            layer: null,
+            drawPoint: null,
+            drawLine: null,
+            drawPolygon: null,
+            pointLayer: null,
+            lineLayer: null,
+            polygonLayer: null,
+            url: 'http://localhost:8090/iserver/services/map-world/rest/maps/World'
+        },
+        mounted: function () {
+            this.init();
+        },
+        methods: {
+            init: function () {
+                this.pointLayer = new SuperMap.Layer.Vector("pointLayer");
+                this.lineLayer = new SuperMap.Layer.Vector("lineLayer");
+                this.polygonLayer = new SuperMap.Layer.Vector("polygonLayer");
+                this.drawPoint = new SuperMap.Control.DrawFeature(this.pointLayer, SuperMap.Handler.Point, {
+                    multi: true
+                });
+                this.drawLine = new SuperMap.Control.DrawFeature(this.lineLayer, SuperMap.Handler.Path, {
+                    multi: true
+                });
+                this.drawPolygon = new SuperMap.Control.DrawFeature(this.polygonLayer, SuperMap.Handler.Polygon);
+                this.map = new SuperMap.Map("map", {
+                    controls: [
+                        new SuperMap.Control.Zoom(),
+                        new SuperMap.Control.Navigation(),
+                        new SuperMap.Control.LayerSwitcher(), this.drawPoint, this.drawLine,
+                        this.drawPolygon
+                    ]
+                });
+                this.layer = new SuperMap.Layer.TiledDynamicRESTLayer("World", this.url, null, {
+                    maxResolution: "auto"
+                });
+                this.layer.events.on({
+                    "layerInitialized": this.addLayer
+                });
+            },
+            addLayer: function () {
+                this.map.addLayers([this.layer, this.pointLayer, this.lineLayer, this.polygonLayer]);
+                //显示地图范围
+                this.map.setCenter(new SuperMap.LonLat(0, 0), 0);
+            },
+            deactiveAll: function () {
+                this.drawPoint.deactivate();
+                this.drawLine.deactivate();
+                this.drawPolygon.deactivate();
+            },
+            draw_point: function () {
+                this.deactiveAll();
+                this.drawPoint.activate();
+
+            },
+            draw_line: function () {
+                this.deactiveAll();
+                this.drawLine.activate();
+            },
+
+            draw_polygon: function () {
+                this.deactiveAll();
+                this.drawPolygon.activate();
+            },
+            clearFeatures: function () {
+                this.deactiveAll();
+                this.pointLayer.removeAllFeatures();
+                this.lineLayer.removeAllFeatures();
+                this.polygonLayer.removeAllFeatures();
+            }
+        }
+    });
+</script>
+
+</html>
